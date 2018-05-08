@@ -11,9 +11,10 @@ logging.basicConfig(stream=sys.stderr, level=logging.INFO)
 logger = logging.getLogger()
 
 KEY = os.environ['MAILCHIMP_KEY']
+DATACENTER = os.environ['MAILCHIMP_DATACENTER']
 
-EXPORT_URL = 'https://us7.api.mailchimp.com/export/1.0/list/'
-LISTS_URL = 'https://us7.api.mailchimp.com/3.0/lists/'
+EXPORT_URL = 'https://{}.api.mailchimp.com/export/1.0/list/'.format(DATACENTER)
+LISTS_URL = 'https://{}.api.mailchimp.com/3.0/lists/'.format(DATACENTER)
 
 PAGE_SIZE = 100
 
