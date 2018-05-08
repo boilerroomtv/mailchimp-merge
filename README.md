@@ -1,4 +1,4 @@
-# MAILCHIMP LIST MERGER
+# Mailchimp merge
 
 Usage:
 
