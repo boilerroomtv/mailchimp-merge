@@ -97,6 +97,21 @@ def get_list(list_id):
                 yield extract_data(data, indexes) + (list_id,)
 
 
+def get_list_raw(list_id):
+    payload = {
+        'apikey': KEY,
+        'id': list_id,
+
+    }
+    r = requests.post(EXPORT_URL, data=json.dumps(payload), stream=True)
+    r.raise_for_status()
+    for line in r.iter_lines():
+        # filter out keep-alive new lines
+        if line:
+            decoded_line = line.decode('utf-8')
+            yield json.loads(decoded_line)
+
+
 def _get_lists(offset=0):
     payload = {
         'fields': 'lists.id,lists.name,total_items',
@@ -128,6 +143,15 @@ def main():
             results.append(row)
 
     return results.export('csv', delimiter='\t')
+
+
+def backup_lists():
+    for list_id, name in get_lists():
+        logger.info('List ID: {id}\tList name: {name}'.format(id=list_id, name=name))
+        with open('{} - {} - BACKUP.json'.format(list_id, name), 'w') as f:
+            for row in get_list_raw(list_id):
+                f.write('\t'.join(str(cell) for cell in row))
+                f.write('\n')
 
 
 if __name__ == '__main__':
